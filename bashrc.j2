@@ -14,7 +14,7 @@ if [ -z "$EDITOR" ]; then
     export EDITOR=vim
 fi
 
-export PS1="\[\e[0;32m\]\A|\u@\h:\[\e[0;33m\]\W \[\e[0;31m\]$\[\e[0;38m\] "
+export PS1="\[\e[0;{{ prompt_color }}m\]\A|\u@\h:\[\e[0;33m\]\W \[\e[0;31m\]$\[\e[0;38m\] "
 
 # Creates a directory and immediately enters it
 mkcd ()

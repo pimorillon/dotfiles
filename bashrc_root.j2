@@ -13,7 +13,7 @@ if [ -z "$EDITOR" ]; then
     export EDITOR=vim
 fi
 
-export PS1="\[\e[0;32m\]\A|\[\e[0;31m\]\u@\[\e[0;32m\]\h:\[\e[0;33m\]\W \[\e[0;31m\]$\[\e[0;38m\] "
+export PS1="\[\e[0;{{ prompt_color }}m\]\A|\[\e[0;31m\]\u@\[\e[0;{{ prompt_color }}m\]\h:\[\e[0;33m\]\W \[\e[0;31m\]$\[\e[0;38m\] "
 
 # Creates a directory and immediately enters it
 mkcd ()
@@ -21,6 +21,7 @@ mkcd ()
     mkdir -p -- "$1" && cd -P -- "$1"
 }
 
+#Special root aliases
 alias sctl='systemctl'
 alias jctl='journalctl'
 
