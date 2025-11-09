@@ -55,15 +55,15 @@
       when: not item.template and (item.target in ['user','both'])
 
     # Static files for root
-#    - name: Deploy static files for root
-#      copy:
-#        src: "{{ item.src }}"
-#        dest: "/root/{{ item.dest) }}"
-#        owner: "root"
-#        group: "root"
-#        mode: "{{ item.mode }}"
-#      loop: "{{ dotfiles }}"
-#      loop_control:
-#        label: "{{ item.dest }} ({{ item.target }})"
-#      when: not item.template and (item.target in ['root','both'])
-#      become: true
+    - name: Deploy static files for root
+      copy:
+        src: "{{ item.src }}"
+        dest: "/root/{{ item.dest }}"
+        owner: "root"
+        group: "root"
+        mode: "{{ item.mode }}"
+      loop: "{{ dotfiles }}"
+      loop_control:
+        label: "{{ item.dest }} ({{ item.target }})"
+      when: not item.template and (item.target in ['root','both'])
+      become: true
