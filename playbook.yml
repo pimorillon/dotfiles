@@ -1,0 +1,58 @@
+- name: Deploy dotfiles
+  hosts: all
+  vars:
+    dotfiles:
+      # Different templates for user and root
+      - { src: "bashrc.j2", dest: ".bashrc", mode: "0644", template: true, target: "user" }
+      - { src: "bashrc_root.j2", dest: ".bashrc", mode: "0644", template: true, target: "root" }
+
+      # Files identical for both user and root
+      - { src: "vimrc", dest: ".vimrc", mode: "0644", template: false, target: "both" }
+      - { src: "bash_aliases", dest: ".bash_aliases", mode: "0644", template: false, target: "both" }
+
+      # Root-only static file
+      #- { src: "rootfile.conf", dest: "rootfile.conf", mode: "0644", template: false, target: "root" }
+
+  tasks:
+    - name: Deploy all dotfiles
+      block:
+        - name: Deploy to user (template)
+          template:
+            src: "{{ item.src }}"
+            dest: "/home/{{ ansible_user }}/{{ item.dest }}"
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: "{{ item.mode }}"
+          when: item.template and (item.target in ['user','both'])
+
+        - name: Deploy to root (template)
+          template:
+            src: "{{ item.src }}"
+            dest: "{{ item.target == 'root' | ternary(item.dest, '/root/' ~ item.dest) }}"
+            owner: "root"
+            group: "root"
+            mode: "{{ item.mode }}"
+          when: item.template and (item.target in ['root','both'])
+          become: true
+
+        - name: Deploy to user (static)
+          copy:
+            src: "{{ item.src }}"
+            dest: "/home/{{ ansible_user }}/{{ item.dest }}"
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: "{{ item.mode }}"
+          when: not item.template and (item.target in ['user','both'])
+
+        - name: Deploy to root (static)
+          copy:
+            src: "{{ item.src }}"
+            dest: "{{ item.target == 'root' | ternary(item.dest, '/root/' ~ item.dest) }}"
+            owner: "root"
+            group: "root"
+            mode: "{{ item.mode }}"
+          when: not item.template and (item.target in ['root','both'])
+          become: true
+      loop: "{{ dotfiles }}"
+      loop_control:
+        label: "{{ item.dest }} ({{ item.target }})"
