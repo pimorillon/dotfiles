@@ -13,6 +13,9 @@
       # Root-only static file
       #- { src: "rootfile.conf", dest: "rootfile.conf", mode: "0644", template: false, target: "root" }
 
+      # User-only static file
+      - { src: "bash_profile", dest: ".bash_profile", mode: "0644", template: false, target: "user" }
+
   tasks:
     # Templates for user
     - name: Deploy template files for user
